@@ -2,28 +2,27 @@ import React from "react";
 import { FaEnvelope, FaFacebook, FaPhone } from "react-icons/fa";
 
 const Contact = () => {
-  const [result, setResult] = React.useState("");
-
-  const onSubmit = async (event) => {
+  
+const onSubmit = async (event) => {
     event.preventDefault();
-    setResult("Sending....");
     const formData = new FormData(event.target);
 
     formData.append("access_key", "f2d15079-4821-4360-9fc0-d249e27732db");
 
-    const response = await fetch("https://api.web3forms.com/submit", {
+    const object = Object.fromEntries(formData);
+    const json = JSON.stringify(object);
+
+    const res = await fetch("https://api.web3forms.com/submit", {
       method: "POST",
-      body: formData,
-    });
+      headers: {
+        "Content-Type": "application/json",
+        Accept: "application/json"
+      },
+      body: json
+    }).then((res) => res.json());
 
-    const data = await response.json();
-
-    if (data.success) {
-      setResult("Form Submitted Successfully");
-      event.target.reset();
-    } else {
-      console.log("Error", data);
-      setResult(data.message);
+    if (res.success) {
+      console.log("Success", res);
     }
   };
   return (
